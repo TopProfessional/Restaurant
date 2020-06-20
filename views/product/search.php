@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Главная</title>
+        <link href="/template/css/bootstrap.min.css" rel="stylesheet"> 
+        <link href="/template/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/template/css/prettyPhoto.css" rel="stylesheet">
+        <link href="/template/css/price-range.css" rel="stylesheet">
+        <link href="/template/css/animate.css" rel="stylesheet">
+        <link href="/template/css/main.css" rel="stylesheet">
+        <link href="/template/css/responsive.css" rel="stylesheet">
+        <link href="/template/css/jquery-ui.css" rel="stylesheet">
+       
+        
+        <!--[if lt IE 9]>
+        <script src="js/html5shiv.js"></script>
+        <script src="js/respond.min.js"></script>
+        <![endif]-->       
+        <link rel="shortcut icon" href="images/ico/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png">
+    </head><!--/head-->
+
+    <body>
+        <header id="header"><!--header-->
+           
+
+            <div class="header-middle"><!--header-middle-->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="logo pull-left">
+                                <a href="/"> <h1>R1 Restaurant</h1><!--<img src="images/home/logo.png" alt="" />--></a>
+                                
+                                
+           
+                                
+                            </div>
+                        </div>
+                        <div class="header-bottom"><!--header-bottom-->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+                            <div class="mainmenu pull-right">
+                                <ul class="nav navbar-nav collapse navbar-collapse">
+                                 <!--   <li><a href="/catalog/">Каталог</a></li> -->
+                                        
+                                 <!--   <li><a href="/menu/">Меню</a></li> -->
+                                 <!--   <li><a href="/about/">О ресторане</a></li>
+                                 <!--   <li><a href="/contacts/">Контакты</a></li> -->                                  
+                                    
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+            </div><!--/header-bottom-->
+                    </div>
+                </div>
+            </div><!--/header-middle-->
+            
+           
+           
+        </header><!--/header-->
+<?php
+
+$name = $_POST['search'];
+//echo 'название '.$name;
+$name1="'".$name."' ";
+
+//echo '<br>название '.$name1;
+$user='root';
+$pass='';
+$dbh = new PDO('mysql:host=localhost;dbname=restnpeace', $user, $pass);
+$dbh->exec("set names utf8");
+// здесь мы каким-то образом используем соединение
+
+$sql="SELECT id FROM product where name like ".$name1;
+//echo "<BR>".$sql."<BR>";
+$result = $dbh->query($sql);
+
+if(!$result){print $dbh->errorCode();
+ print_r($dbh->errorInfo());}     
+ 
+        
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) 
+        {
+             $id=$row['id']; 
+        }
+       //echo $id;
+ 
+       ///////////////////////////////////
+       
+$id = intval($id);
+
+        if ($id) {                        
+                        
+            $result = $dbh->query('SELECT * FROM product WHERE id=' . $id);
+            $result->setFetchMode(PDO::FETCH_ASSOC);
+            
+            $product= $result->fetch();
+            
+        }
+ 
+////////////////////////////////////////
+        class Help{
+         public static function getImage($id)
+    {
+        // Название изображения-пустышки
+        $noImage = 'no-image.jpg';
+
+        // Путь к папке с товарами
+        $path = '/template/images/home/';
+
+        // Путь к изображению товара
+        $pathToProductImage = $path . $id . '.jpg';
+
+        if (file_exists($_SERVER['DOCUMENT_ROOT'].$pathToProductImage)) {
+            // Если изображение для товара существует
+            // Возвращаем путь изображения товара
+            return $pathToProductImage;
+        }
+
+        // Возвращаем путь изображения-пустышки
+        return $path . $noImage;
+    }
+        }
+  ?>      
+            <div class="col-sm-9 padding-right">
+                <div class="product-details"><!--product-details-->
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="view-product">
+                                <img src="<?php echo Help::getImage($product['id']); ?>" alt="" />
+                            </div>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="product-information"><!--/product-information-->
+                                <img  src="/template/images/product-details/new.jpg" class="newarrival" alt="" />
+                                <h2><?php echo $product['name'];?></h2>
+                               
+                                <span>
+                                    <span><?php echo $product['price'];?>грн</span>
+                                    <label>Количество:</label>
+                                    <input type="text" value="1" />
+                                    <button type="button" class="btn btn-default cart">
+                                        
+                                        <a href="/cart/add/<?php echo $product['id'];?>" 
+                                           data-id="<?php echo $product['id']; ?>"
+                                            >
+                                            Заказать</a> 
+                                    </button>
+                                    
+                                     
+                                    
+                                </span>
+                                <p><b>Наличие:</b> можно изготовить</p>
+                               
+                            </div><!--/product-information-->
+                        </div>
+                    </div>
+                    <div class="row">                                
+                        <div class="col-sm-12">
+                            <h5>Описание товара</h5>
+                            <?php echo $product['description'];?>
+                        </div>
+                    </div>
+                </div><!--/product-details-->
